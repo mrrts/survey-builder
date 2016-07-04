@@ -8,7 +8,7 @@ Meteor.startup(() => {
 
   // publish the logged-in user's surveys only
   Meteor.publish('surveys', function () {
-    return Surveys.find({creator: this.userId});
+    return Surveys.find({creatorId: this.userId});
   });
 
 

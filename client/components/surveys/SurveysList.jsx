@@ -5,12 +5,17 @@ import {Link} from 'react-router';
 import {Surveys} from '../../../imports/collections/surveys';
 import {Courses} from '../../../imports/collections/courses';
 
+import NewSurvey from '../surveys/NewSurvey';
+import moment from 'moment';
+
 class SurveysList extends Component {
   constructor(props) {
     super(props);
-    this.state = {selectedFilterCourse: 'all', filteredSurveys: props.surveys}
+    this.state = {
+      selectedFilterCourse: 'all', 
+      showNewSurveyModal: false,
+    }
   }
-
 
   renderCourseSelectOptions() {
     return this.props.courses.map((course) => {
@@ -22,24 +27,28 @@ class SurveysList extends Component {
     })
   }
 
+  filteredSurveys() {
+    var filteredSurveys = this.props.surveys;
+    if (this.state.selectedFilterCourse !== 'all') {
+      filteredSurveys = this.props.surveys.filter((survey) => {
+        return survey.courseId === this.state.selectedFilterCourse
+      })
+    }
+    return filteredSurveys;
+  }
+
   handleSelectFilterCourseChange(e) {
     e.preventDefault();
     // Update survey list to show only those belonging to selected course
     // Default to full list
-    const newFilteredSurveys = this.props.surveys;
-    if (this.state.selectedCourse !== 'all') {
-      newFilteredCourses = this.props.surveys.filter((survey) => {
-        return survey.courseId === this.state.selectedCourse
-      })
-    }
+    
     this.setState({
-      selectedCourse: e.target.value,
-      filteredSurveys: newFilteredSurveys
+      selectedFilterCourse: e.target.value,
     })
   }
 
   renderSurveysOuterView() {
-    if (this.state.filteredSurveys.length === 0) {
+    if (this.filteredSurveys().length === 0) {
       return (
           <div className="alert text-info">
             No surveys found.
@@ -56,10 +65,16 @@ class SurveysList extends Component {
   }
 
   renderSurveys() {
-    return this.state.filteredSurveys.map((survey) => {
+    return this.filteredSurveys().map((survey) => {
+      const course = this.props.courses.filter((courseObj) => {
+        return courseObj._id === survey.courseId;
+      })[0];
       return (
           <div key={survey._id} className="list-group-item">
-
+            <h3>{survey.title}</h3>
+            <p className="survey-meta">
+              Course: {course.title} (Created {moment(survey.createdAt).format('MM/DD/YY')})
+            </p>
           </div>
         )
     })
@@ -88,13 +103,17 @@ class SurveysList extends Component {
               </select>
             </div>
           </form>
-          <Link to="/surveys/new" className="pull-right btn btn-primary">
+          <button className="pull-right btn btn-primary"
+            onClick={() => {this.setState({showNewSurveyModal: true})}}>
               <i className="fa fa-plus" aria-hidden="true"></i> Add a Survey
-          </Link>
+          </button>
           <div className="clearfix" />
           <div className="content-container">
             {this.renderSurveysOuterView()}
           </div>
+
+          <NewSurvey show={this.state.showNewSurveyModal} closeModal={() => {this.setState({showNewSurveyModal: false})}} />
+
         </div>
       )
   }
