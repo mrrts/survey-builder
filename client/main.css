@@ -1,1 +1,11 @@
-/* CSS declarations go here */
+@import "./styles/bootstrap_override.css";
+
+
+.form-inline label {
+  margin-right: 15px;
+}
+
+.content-container {
+  margin-top: 30px;
+  background: #ececec;
+}
