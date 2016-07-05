@@ -12,7 +12,7 @@ export default class NewQuestion extends Component {
         responseType: 'shortText',
       },
       multipleChoiceData: {
-        choices: [],
+        choices: [''],
       },
       question: ''
     }
@@ -38,9 +38,10 @@ export default class NewQuestion extends Component {
 
   handleQuestionChange(e) {
     e.preventDefault();
+    const question = e.target.value
     this.setState({
-      question: e.target.value,
-    })
+      question,
+    });
   }
 
   handleTextResponseTypeRadioClick(e) {
@@ -76,10 +77,53 @@ export default class NewQuestion extends Component {
       )
   }
 
+  addEmptyChoice(e) {
+    e.preventDefault();
+    var cloneOfMultipleChoiceData = JSON.parse(JSON.stringify(this.state.multipleChoiceData));
+    cloneOfMultipleChoiceData.choices.push('');
+    this.setState({
+      multipleChoiceData: cloneOfMultipleChoiceData
+    });
+  }
+
+  removeChoice(e, index) {
+    e.preventDefault();
+    var cloneOfMultipleChoiceData = JSON.parse(JSON.stringify(this.state.multipleChoiceData));
+    cloneOfMultipleChoiceData.choices.splice(index, 1);
+    this.setState({
+      multipleChoiceData: cloneOfMultipleChoiceData
+    }); 
+  }
+
+  updateChoice(e, index) {
+    var cloneOfMultipleChoiceData = JSON.parse(JSON.stringify(this.state.multipleChoiceData));
+    cloneOfMultipleChoiceData.choices[index] = e.target.value;
+    this.setState({ multipleChoiceData: cloneOfMultipleChoiceData });
+  }
+
   multipleChoiceFields() {
+    const {multipleChoiceData} = this.state;
+    const choiceInputFields = multipleChoiceData.choices.map((choice, i) => {
+      return (
+          <div key={i} className="form-group">
+            <label className="control-label">
+              Choice #{i + 1}: &nbsp;
+              <a className="text-danger" onClick={(e) => {this.removeChoice(e, i)}}>
+                   <i className="fa fa-times-circle" aria-hidden="true"></i>
+              </a>
+            </label>
+            <input className="form-control" type="text" value={multipleChoiceData.choices[i]}
+              onChange={(e) => {this.updateChoice(e, i)}} />
+          </div>
+        )
+    })
     return (
         <div>
-          hello
+          {choiceInputFields}
+          <button className="btn btn-primary btn-xs"
+            onClick={this.addEmptyChoice.bind(this)}>
+            Add Another Choice
+          </button>
         </div>
       )
   }
