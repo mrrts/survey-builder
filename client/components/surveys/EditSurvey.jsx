@@ -5,12 +5,13 @@ import {Courses} from '../../../imports/collections/courses';
 import LoadingIndicator from '../LoadingIndicator';
 import NewQuestion from '../surveys/NewQuestion';
 import bootstrapConfirm from 'bootstrap-confirm';
+import changeCase from 'change-case';
 import {browserHistory} from 'react-router';
 
 class EditSurvey extends Component {
   constructor(props) {
     super(props);
-    this.state = {title: '', questions: [], courseId: '', receivedFromDB: false, error: null, showNewQuestionModal: false}
+    this.state = {title: '', questions: [], courseId: '', editingQuestion: false, receivedFromDB: false, error: null, showNewQuestionModal: false}
   }
 
   componentDidUpdate() {
@@ -75,14 +76,79 @@ class EditSurvey extends Component {
     });
   }
 
+  handleEditQuestionClick(e, index) {
+    e.preventDefault();
+    this.setState({
+      editingQuestion: index,
+      showNewQuestionModal: true
+    })
+  }
+
   closeModal() {
     this.setState({
-      showNewQuestionModal: false
+      showNewQuestionModal: false,
+      editingQuestion: false
     });
   }
 
+  addQuestion(questionObj) {
+    var clonedArr = JSON.parse(JSON.stringify(this.state.questions));
+    clonedArr.push(questionObj);
+    this.setState({questions: clonedArr});
+  }
+
+  updateQuestion(i, questionObj) {
+    var clonedArr = JSON.parse(JSON.stringify(this.state.questions));
+    clonedArr.splice(i, 1, questionObj);
+    this.setState({ questions: clonedArr });
+  }
+
+  removeQuestion(e, index) {
+    e.preventDefault();
+    var clonedArr = JSON.parse(JSON.stringify(this.state.questions));
+    clonedArr.splice(index, 1);
+    this.setState({ questions: clonedArr });
+  }
+
   renderQuestions() {
-    return;
+    return this.state.questions.map((question, i) => {
+      return (
+          <li key={i} className="list-group-item">
+            <div className="pull-left">
+              <p className="label label-default">{changeCase.sentence(question.type)}</p>
+              <h5>
+                <i className="fa fa-quote-left text-info" aria-hidden="true"></i> <strong>{question.question}</strong>&nbsp;
+              </h5>
+              <ul>
+                {this.renderQuestionDataPreview(question)}
+              </ul>
+            </div>
+            <div className="question-list-item-actions pull-right">
+              <button className="btn btn-xs btn-info"
+                onClick={(e) => {this.handleEditQuestionClick(e, i) }}>
+                <i className="fa fa-pencil" aria-hidden="true"></i>
+              </button>
+              <button className="btn btn-xs btn-danger"
+                onClick={(e) => {this.removeQuestion(e, i)}}>
+                <i className="fa fa-trash" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div className="clearfix" />
+          </li>
+        )
+    });
+  }
+
+  renderQuestionDataPreview(question) {
+    const {textResponseData, multipleChoiceData, ratingSliderData, type} = question;
+    switch (type) {
+      case 'textResponse':
+        return (<li>{changeCase.sentence(textResponseData.responseType)}</li>);
+      case 'multipleChoice':
+        return multipleChoiceData.choices.map((choice, i) => {
+          return (<li key={i}><strong>Choice:</strong> {choice} </li>);
+        });
+    }
   }
 
   renderCourseSelectOptions() {
@@ -94,6 +160,8 @@ class EditSurvey extends Component {
         )
     });
   }
+
+
 
   render() {
     if (this.props.loading) {
@@ -140,7 +208,9 @@ class EditSurvey extends Component {
               <div className="form-group">
                 <label className="col-sm-2 col-md-1 control-label">Questions</label>
                 <div className="col-sm-10 col-md-11">
-                  {this.renderQuestions()}
+                  <ul className="list-group">
+                    {this.renderQuestions()}
+                  </ul>
                   <button className="btn btn-primary btn-sm"
                     onClick={this.handleNewQuestionClick.bind(this)}>
                       <i className="fa fa-plus" aria-hidden="true"></i> Add a Question
@@ -150,7 +220,13 @@ class EditSurvey extends Component {
             </form>
           </div>
 
-          <NewQuestion show={this.state.showNewQuestionModal} closeModal={this.closeModal.bind(this)} />
+          <NewQuestion show={this.state.showNewQuestionModal} 
+            questions={this.state.questions} 
+            editingQuestion={this.state.editingQuestion} 
+            resetEditing={() => {this.setState({editingQuestion: false})}} 
+            updateQuestion={this.updateQuestion.bind(this)} 
+            closeModal={this.closeModal.bind(this)} 
+            addQuestion={this.addQuestion.bind(this)} />
 
         </div>
       )

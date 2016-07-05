@@ -28,12 +28,35 @@ export default class NewQuestion extends Component {
     e.preventDefault();
     this.props.closeModal();
     this.setState({
-      type: 'textResponse'
-    })
+      type: 'textResponse',
+      question: '',
+      multipleChoiceData: {
+        choices: ['']
+      }
+    });
   }
 
-  handleAddQuestionClick(e) {
+  handleSaveQuestionClick(e) {
     e.preventDefault();
+    var questionObj = this.cloneOfState();
+    const index = this.props.editingQuestion;
+    if (index !== false) {
+      // We are in Edit mode
+      this.props.updateQuestion(index, this.state);
+    }
+    else {
+      // We are creating a new question
+      this.props.addQuestion(questionObj);
+    }
+    this.setState({
+      type: 'textResponse',
+      question: '',
+      multipleChoiceData: {
+        choices: ['']
+      }
+    });
+    this.props.resetEditing();
+    this.props.closeModal();
   }
 
   handleQuestionChange(e) {
@@ -48,6 +71,12 @@ export default class NewQuestion extends Component {
     var textResponseData = this.state.textResponseData;
     textResponseData.responseType = e.target.value;
     this.setState({ textResponseData });
+  }
+
+  handleModalEntered(e) {
+    if (this.props.editingQuestion !== false) {
+      this.setState(this.props.questions[this.props.editingQuestion]);
+    }
   }
 
   textResponseFields() {
@@ -106,14 +135,17 @@ export default class NewQuestion extends Component {
 
   multipleChoiceFields() {
     const {multipleChoiceData} = this.state;
+    const numChoices = multipleChoiceData.choices.length;
     const choiceInputFields = multipleChoiceData.choices.map((choice, i) => {
       return (
           <div key={i} className="form-group">
             <label className="control-label">
               Choice #{i + 1}: &nbsp;
-              <a className="text-danger" onClick={(e) => {this.removeChoice(e, i)}}>
+              {numChoices == 1 ? '' : 
+                (<a className="text-danger" onClick={(e) => {this.removeChoice(e, i)}}>
                    <i className="fa fa-times-circle" aria-hidden="true"></i>
-              </a>
+                </a>)
+              }
             </label>
             <input className="form-control" type="text" value={multipleChoiceData.choices[i]}
               onChange={(e) => {this.updateChoice(e, i)}} />
@@ -146,9 +178,9 @@ export default class NewQuestion extends Component {
 
   render() {
     return (
-        <Modal className="new-question-modal" show={this.props.show}>
+        <Modal className="new-question-modal" bsSize="lg" onEntered={this.handleModalEntered.bind(this)} show={this.props.show}>
           <Modal.Header>
-            <h3>Add a New Question</h3>
+            <h3>{this.props.editingQuestion !== false ? "Edit" : "Add a New"} Question</h3>
           </Modal.Header>
           <Modal.Body>
             <h4><strong>Question type:</strong></h4>
@@ -165,7 +197,7 @@ export default class NewQuestion extends Component {
               </label>
               <label className="radio-inline">
                 <input type="radio" value="ratingSlider"
-                  checked={this.state.type == 'ratingSlider'} readOnly
+                  checked={this.state.type == 'ratingSlider'} readOnly disabled
                   onClick={this.handleQuestionTypeClick.bind(this)} /> Rating Slider
               </label>
             </form>
@@ -186,8 +218,8 @@ export default class NewQuestion extends Component {
                 Cancel
             </button>
             <button className="btn btn-primary"
-              onClick={this.handleAddQuestionClick.bind(this)}>
-                Add Question
+              onClick={this.handleSaveQuestionClick.bind(this)}>
+                Save Question
             </button>
           </Modal.Footer>
         </Modal>

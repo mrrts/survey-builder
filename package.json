@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "bootstrap-confirm": "0.0.0",
+    "change-case": "^3.0.0",
     "connect-route": "^0.1.5",
     "jquery": "^2.2.4",
     "lodash": "^4.13.1",

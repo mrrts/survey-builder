@@ -38,13 +38,12 @@ form label, form .control-label {
   font-weight: normal;
 }
 
-.survey-list-item-actions .btn {
+.survey-list-item-actions .btn,
+.survey-edit-actions .btn,
+.question-list-item-actions .btn {
   margin: 1px;
 }
 
-.survey-edit-actions .btn {
-  margin: 1px;
-}
 
 .course-title-label {
   font-size: 1.2rem;
