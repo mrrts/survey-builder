@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import {createContainer} from 'meteor/react-meteor-data';
 import {Link} from 'react-router';
+import bootstrapConfirm from 'bootstrap-confirm';
 
 import {Surveys} from '../../../imports/collections/surveys';
 import {Courses} from '../../../imports/collections/courses';
 
 import NewSurvey from '../surveys/NewSurvey';
+import LoadingIndicator from '../LoadingIndicator';
 import moment from 'moment';
 
 class SurveysList extends Component {
@@ -47,6 +49,23 @@ class SurveysList extends Component {
     })
   }
 
+  handleDeleteClick(e, surveyId, surveyTitle) {
+    e.preventDefault();
+    bootstrapConfirm(`Are you sure you want to delete "${surveyTitle}"?`, (confirmed) => {
+      if (confirmed) {
+        Meteor.call('survey.remove', surveyId);
+      }
+    });
+  }
+
+  handleJSONButtonClick(e) {
+    e.preventDefault();
+  }
+
+  handleTestDriveClick(e) {
+    e.preventDefault();
+  }
+
   renderSurveysOuterView() {
     if (this.filteredSurveys().length === 0) {
       return (
@@ -65,22 +84,57 @@ class SurveysList extends Component {
   }
 
   renderSurveys() {
+    if (this.props.loading) {
+      return '';
+    }
     return this.filteredSurveys().map((survey) => {
       const course = this.props.courses.filter((courseObj) => {
         return courseObj._id === survey.courseId;
       })[0];
+      const courseTitle = course ? course.title : '';
       return (
           <div key={survey._id} className="list-group-item">
-            <h3>{survey.title}</h3>
-            <p className="survey-meta">
-              Course: {course.title} (Created {moment(survey.createdAt).format('MM/DD/YY')})
+            <span className="course-title-label label label-default">{courseTitle}</span> 
+            <h3> {survey.title}</h3>
+            <div className="clearfix" />
+            <p className="survey-meta pull-left label label-default">
+              <strong>{survey.questions.length}</strong> Question{survey.questions.length == 1 ? '' : 's'} | 
+              Created {moment(survey.createdAt).format('MM/DD/YYYY')}
             </p>
+            <div className="pull-right survey-list-item-actions">
+              <button className="btn btn-success btn-xs"
+                onClick={this.handleTestDriveClick.bind(this)}
+                title="Test Drive">
+                  <i className="fa fa-play-circle" aria-hidden="true"></i> Test Drive
+              </button>
+              <button className="btn btn-primary btn-xs"
+                onClick={this.handleJSONButtonClick.bind(this)}
+                title="Get JSON"
+                >
+                  <i className="fa fa-exchange" aria-hidden="true"></i> JSON
+              </button>
+              <Link className="btn btn-info btn-xs"
+                to={`/surveys/${survey._id}/edit`}
+                title="Edit">
+                  <i className="fa fa-pencil" aria-hidden="true"></i> Edit
+              </Link>
+              <button className="btn btn-danger btn-xs"
+                onClick={(e) => {this.handleDeleteClick(e, survey._id, survey.title)}}
+                title="Delete">
+                  <i className="fa fa-trash" aria-hidden="true"></i> Delete
+              </button>
+            </div>
+            <div className="clearfix" />
           </div>
         )
     })
   }
 
   render() {
+    if (this.props.loading) {
+      return <LoadingIndicator />
+    }
+
     if (!this.props.currentUser) {
       return (
           <div className="alert alert-info">
@@ -108,7 +162,7 @@ class SurveysList extends Component {
               <i className="fa fa-plus" aria-hidden="true"></i> Add a Survey
           </button>
           <div className="clearfix" />
-          <div className="content-container">
+          <div className="content-container col-lg-10 col-lg-push-1">
             {this.renderSurveysOuterView()}
           </div>
 
@@ -120,11 +174,13 @@ class SurveysList extends Component {
 }
 
 export default createContainer(() => {
-  Meteor.subscribe('surveys');
-  Meteor.subscribe('courses');
+  const surveysHandler = Meteor.subscribe('surveys');
+  const coursesHandler = Meteor.subscribe('courses');
+  const loading = !surveysHandler.ready() && !coursesHandler.ready();
   return {
-    surveys: Surveys.find({}).fetch(),
+    surveys: Surveys.find({}, {sort: {createdAt: -1}}).fetch(),
     courses: Courses.find({}).fetch(),
-    currentUser: Meteor.user()
+    currentUser: Meteor.user(),
+    loading
   }
 }, SurveysList);

@@ -22,4 +22,15 @@ Meteor.methods({
     check(surveyId, String);
     Surveys.remove(surveyId);
   },
+
+  'survey.update': function (surveyData) {
+    const {surveyId, title, courseId, questions} = surveyData;
+    Surveys.update(surveyId, {
+      $set: {
+        title,
+        courseId,
+        questions,
+      }
+    });
+  },
 });

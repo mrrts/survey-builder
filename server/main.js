@@ -11,6 +11,11 @@ Meteor.startup(() => {
     return Surveys.find({creatorId: this.userId});
   });
 
+  // publish a single survey for the surveyEdit and surveyShow pages
+  Meteor.publish('singleSurvey', function (surveyId) {
+    return Surveys.find({_id: surveyId});
+  });
+
 
   // publish a non-access-controlled list of courses for prototype
   Meteor.publish('courses', function () {

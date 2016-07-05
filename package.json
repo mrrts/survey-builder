@@ -5,6 +5,7 @@
     "start": "meteor run"
   },
   "dependencies": {
+    "bootstrap-confirm": "0.0.0",
     "connect-route": "^0.1.5",
     "jquery": "^2.2.4",
     "lodash": "^4.13.1",
@@ -14,6 +15,7 @@
     "react-addons-pure-render-mixin": "^15.2.0",
     "react-bootstrap": "^0.29.5",
     "react-dom": "^15.2.0",
-    "react-router": "^2.5.2"
+    "react-router": "^2.5.2",
+    "react-router-active-component": "^4.0.0-rc.0"
   }
 }

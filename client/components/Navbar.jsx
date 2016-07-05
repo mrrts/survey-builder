@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router';
+import activeComponent from 'react-router-active-component';
 import {createContainer} from 'meteor/react-meteor-data';
+
+var NavbarLink = activeComponent('li');
 
 class Navbar extends Component {
   handleLogout(e) {
@@ -25,7 +28,7 @@ class Navbar extends Component {
                 {this.props.currentUser ? 
                   (
                     <ul className="nav navbar-nav navbar-right">
-                      <li><Link to="/surveys">My Surveys</Link></li>
+                      <NavbarLink to="/" activeClassName="active">My Surveys</NavbarLink>
                       <li><a onClick={this.handleLogout.bind(this)} href="#">Logout</a></li>
                     </ul>
                   ) 
@@ -34,8 +37,8 @@ class Navbar extends Component {
 
                   (
                     <ul className="nav navbar-nav navbar-right">
-                      <li><Link to="/register">Sign Up</Link></li>
-                      <li><Link to="/login">Log In</Link></li>
+                      <NavbarLink to="/register">Sign Up</NavbarLink>
+                      <NavbarLink to="/login">Log In</NavbarLink>
                     </ul>
                   )
                 }

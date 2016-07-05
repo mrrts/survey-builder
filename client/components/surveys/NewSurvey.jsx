@@ -28,8 +28,24 @@ class NewSurvey extends Component {
     });
   }
 
+  handleCloseButtonClick(e) {
+    e.preventDefault();
+    this.setState({
+      title: '',
+      selectedCourseId: 'none',
+      error: null
+    });
+    this.props.closeModal();
+  }
+
   handleCreateButtonClick(e) {
     e.preventDefault();
+    if (this.state.title == '' || this.state.selectedCourseId == 'none') {
+      this.setState({
+        error: 'Please complete all fields'
+      });
+      return;
+    }
     Meteor.call('surveys.insert', 
       {courseId: this.state.selectedCourseId, title: this.state.title}, 
       (err, result) => {
@@ -84,7 +100,7 @@ class NewSurvey extends Component {
           </Modal.Body>
           <Modal.Footer>
             <button className="btn btn-default"
-              onClick={this.props.closeModal}>
+              onClick={this.handleCloseButtonClick.bind(this)}>
                 Close
             </button>
             <button className="btn btn-primary"
