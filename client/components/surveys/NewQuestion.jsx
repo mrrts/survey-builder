@@ -77,28 +77,31 @@ export default class NewQuestion extends Component {
       )
   }
 
+
+  cloneOfState() {
+    //only works if none of the items stored in this.state are functions
+    return JSON.parse(JSON.stringify(this.state));
+  }
+
+
   addEmptyChoice(e) {
     e.preventDefault();
-    var cloneOfMultipleChoiceData = JSON.parse(JSON.stringify(this.state.multipleChoiceData));
-    cloneOfMultipleChoiceData.choices.push('');
-    this.setState({
-      multipleChoiceData: cloneOfMultipleChoiceData
-    });
+    var cloneOfState = this.cloneOfState();
+    cloneOfState.multipleChoiceData.choices.push('');
+    this.setState(cloneOfState);
   }
 
   removeChoice(e, index) {
     e.preventDefault();
-    var cloneOfMultipleChoiceData = JSON.parse(JSON.stringify(this.state.multipleChoiceData));
-    cloneOfMultipleChoiceData.choices.splice(index, 1);
-    this.setState({
-      multipleChoiceData: cloneOfMultipleChoiceData
-    }); 
+    var cloneOfState = this.cloneOfState();
+    cloneOfState.multipleChoiceData.choices.splice(index, 1);
+    this.setState(cloneOfState); 
   }
 
   updateChoice(e, index) {
-    var cloneOfMultipleChoiceData = JSON.parse(JSON.stringify(this.state.multipleChoiceData));
-    cloneOfMultipleChoiceData.choices[index] = e.target.value;
-    this.setState({ multipleChoiceData: cloneOfMultipleChoiceData });
+    var cloneOfState = this.cloneOfState();
+    cloneOfState.multipleChoiceData.choices[index] = e.target.value;
+    this.setState(cloneOfState);
   }
 
   multipleChoiceFields() {
