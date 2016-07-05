@@ -1,7 +1,35 @@
 import { Meteor } from 'meteor/meteor';
 import {Surveys} from '../imports/collections/surveys';
 import {Courses} from '../imports/collections/courses';
+import {WebApp} from 'meteor/webapp';
+import ConnectRoute from 'connect-route';
 import _ from 'lodash';
+
+
+
+const middlewareAPIRedirector = ConnectRoute(function(router) {
+  router.get('/api/surveys', (req, res, next) => {
+    const surveys = Surveys.find({}).fetch();
+    // res.writeHead(200);
+    res.end(JSON.stringify(surveys));
+    next();
+  });
+
+  router.get('/api/surveys/:id', (req, res, next) => {
+    const survey = Surveys.findOne({_id: req.params.id});
+    const course = Courses.findOne({_id: survey.courseId});
+    survey.courseTitle = course.title;
+    // res.writeHead(200);
+    res.end(JSON.stringify(survey));
+    next();
+  });
+})
+
+WebApp.connectHandlers
+  .use(middlewareAPIRedirector);
+
+
+
 
 Meteor.startup(() => {
   // code to run on server at startup
@@ -32,3 +60,10 @@ Meteor.startup(() => {
     })
   }
 });
+
+
+
+
+
+
+

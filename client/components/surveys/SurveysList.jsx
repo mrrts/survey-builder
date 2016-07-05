@@ -8,6 +8,7 @@ import {Courses} from '../../../imports/collections/courses';
 
 import NewSurvey from '../surveys/NewSurvey';
 import LoadingIndicator from '../LoadingIndicator';
+import Login from '../Login.jsx';
 import moment from 'moment';
 
 class SurveysList extends Component {
@@ -102,17 +103,14 @@ class SurveysList extends Component {
               Created {moment(survey.createdAt).format('MM/DD/YYYY')}
             </p>
             <div className="pull-right survey-list-item-actions">
-              <button className="btn btn-success btn-xs"
-                onClick={this.handleTestDriveClick.bind(this)}
-                title="Test Drive">
-                  <i className="fa fa-play-circle" aria-hidden="true"></i> Test Drive
-              </button>
-              <button className="btn btn-primary btn-xs"
-                onClick={this.handleJSONButtonClick.bind(this)}
+
+              <a className="btn btn-primary btn-xs"
+                href={`/api/surveys/${survey._id}`}
+                target="_blank"
                 title="Get JSON"
                 >
                   <i className="fa fa-exchange" aria-hidden="true"></i> JSON
-              </button>
+              </a>
               <Link className="btn btn-info btn-xs"
                 to={`/surveys/${survey._id}/edit`}
                 title="Edit">
@@ -137,8 +135,11 @@ class SurveysList extends Component {
 
     if (!this.props.currentUser) {
       return (
-          <div className="alert alert-info">
-            Please Log In
+          <div>
+            <div className="alert alert-info">
+              Please Log In
+            </div>
+            <Login />
           </div>
         )
     }

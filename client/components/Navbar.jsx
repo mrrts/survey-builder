@@ -37,7 +37,6 @@ class Navbar extends Component {
 
                   (
                     <ul className="nav navbar-nav navbar-right">
-                      <NavbarLink to="/register">Sign Up</NavbarLink>
                       <NavbarLink to="/login">Log In</NavbarLink>
                     </ul>
                   )
