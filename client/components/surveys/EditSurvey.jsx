@@ -75,6 +75,12 @@ class EditSurvey extends Component {
     });
   }
 
+  closeModal() {
+    this.setState({
+      showNewQuestionModal: false
+    });
+  }
+
   renderQuestions() {
     return;
   }
@@ -101,13 +107,13 @@ class EditSurvey extends Component {
               onClick={() => {browserHistory.push('/')}}>
                 <i className="fa fa-ban" aria-hidden="true"></i> Cancel
             </button>
-            <button className="btn btn-success btn-xs"
-              onClick={this.handleSaveButtonClick.bind(this)}>
-                <i className="fa fa-check-circle" aria-hidden="true"></i> Save Changes
-            </button>
             <button className="btn btn-danger btn-xs"
               onClick={this.handleDeleteButtonClick.bind(this)}>
                 <i className="fa fa-trash" aria-hidden="true"></i> Delete Survey
+            </button>
+            <button className="btn btn-success btn-xs"
+              onClick={this.handleSaveButtonClick.bind(this)}>
+                <i className="fa fa-check-circle" aria-hidden="true"></i> Save Changes
             </button>
           </div>
           <div className="content-container">
@@ -135,7 +141,7 @@ class EditSurvey extends Component {
                 <label className="col-sm-2 col-md-1 control-label">Questions</label>
                 <div className="col-sm-10 col-md-11">
                   {this.renderQuestions()}
-                  <button className="btn btn-primary"
+                  <button className="btn btn-primary btn-sm"
                     onClick={this.handleNewQuestionClick.bind(this)}>
                       <i className="fa fa-plus" aria-hidden="true"></i> Add a Question
                   </button>
@@ -144,7 +150,7 @@ class EditSurvey extends Component {
             </form>
           </div>
 
-          <NewQuestion show={this.state.showNewQuestionModal} />
+          <NewQuestion show={this.state.showNewQuestionModal} closeModal={this.closeModal.bind(this)} />
 
         </div>
       )

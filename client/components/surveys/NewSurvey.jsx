@@ -78,8 +78,9 @@ class NewSurvey extends Component {
           </Modal.Header>
           <Modal.Body>
             {this.state.error ? <div className="alert alert-warning">{this.state.error}</div> : ''}
-            <form id="new-survey-form" onSubmit={(e)=>{e.preventDefault()}}>
+            <form id="new-survey-form" onSubmit={this.handleCreateButtonClick.bind(this)}>
               <div className="form-group">
+                <label className="control-label">Course</label>
                 <select ref="course" 
                   value={this.state.selectedCourseId}
                   className="form-control"
@@ -89,6 +90,7 @@ class NewSurvey extends Component {
                 </select>
               </div>
               <div className="form-group">
+                <label className="control-label">Title</label>
                 <input className="form-control" 
                   type="text"
                   value={this.state.title}

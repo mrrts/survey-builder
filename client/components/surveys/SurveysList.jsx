@@ -95,9 +95,9 @@ class SurveysList extends Component {
       return (
           <div key={survey._id} className="list-group-item">
             <span className="course-title-label label label-default">{courseTitle}</span> 
-            <h3> {survey.title}</h3>
+            <h3 className="survey-title"> {survey.title}</h3>
             <div className="clearfix" />
-            <p className="survey-meta pull-left label label-default">
+            <p className="survey-meta pull-left">
               <strong>{survey.questions.length}</strong> Question{survey.questions.length == 1 ? '' : 's'} | 
               Created {moment(survey.createdAt).format('MM/DD/YYYY')}
             </p>

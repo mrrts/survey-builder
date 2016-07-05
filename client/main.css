@@ -1,31 +1,62 @@
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.alert {
+  font-size: 1.6rem;
+}
+
 .form-inline label {
   margin-right: 10px;
 }
 
 .content-container {
   margin-top: 30px;
+  animation: fadein 500ms;
+
+}
+
+form label, form .control-label {
+  font-weight: bold;
 }
 
 .list-group-item {
   margin-bottom: 10px;
+  background: #f7f7f7;
+}
+
+.list-group-item .survey-title {
+  margin-top: 25px;
+  margin-bottom: 8px;
 }
 
 .survey-meta {
   font-size: 1.2rem;
+  margin-left: 2px;
   color: #000;
   font-weight: normal;
-  background: #f3f3f3;
 }
 
 .survey-list-item-actions .btn {
-  margin-left: 1px;
+  margin: 1px;
 }
 
 .survey-edit-actions .btn {
-  margin-right: 1px;
+  margin: 1px;
 }
 
 .course-title-label {
   font-size: 1.2rem;
-  background-color: #abc7bf;
+  background-color: #e4e7f3;
 }
+
+.modal-footer .btn {
+  text-transform: capitalize;
+}
+
+.navbar {
+  border-radius: 0;
+}
+
+
