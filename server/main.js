@@ -15,13 +15,17 @@ const middlewareAPIRedirector = ConnectRoute(function(router) {
     next();
   });
 
-  router.get('/api/surveys/:id', (req, res, next) => {
-    const survey = Surveys.findOne({_id: req.params.id});
-    const course = Courses.findOne({_id: survey.courseId});
-    survey.courseTitle = course.title;
-    // res.writeHead(200);
-    res.end(JSON.stringify(survey));
-    next();
+  router.get('/api/surveys/:id', (request, response, next) => {
+    const survey = Surveys.findOne({_id: request.params.id});
+    Meteor.call('survey.expandedObjForApi', request.params.id, true, (error, result) => {
+      if (error) {
+        response.end(JSON.stringify(error));
+        next();
+        return;
+      }
+      response.end(JSON.stringify(result));
+      next();
+    })
   });
 })
 

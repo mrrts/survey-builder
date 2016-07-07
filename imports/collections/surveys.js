@@ -1,5 +1,6 @@
 import {Mongo} from 'meteor/mongo';
 import {check} from 'meteor/check';
+import {Courses} from './courses';
 
 export const Surveys = new Mongo.Collection('surveys');
 
@@ -43,4 +44,39 @@ Meteor.methods({
       }
     });
   },
+
+  'survey.expandedObjForApi': function (surveyId, isApiCall = false) {
+    if (!this.userId && !isApiCall) {
+      throw new Meteor.Error('not-authorized');
+    }
+    const survey = Surveys.findOne({_id: surveyId});
+    const {_id, createdAt, title, creatorId, courseId, questions} = survey;
+    const streamlinedQuestions = questions.map((item) => {
+      const {type, question} = item;
+      const data = item[`${type}Data`];
+      var streamlined = {
+        question,
+        type,
+        data
+      };     
+      return streamlined;
+    })
+
+    const creator = Meteor.users.findOne({_id: creatorId});
+
+    const course = Courses.findOne({_id: courseId});
+    return {
+      _id,
+      title,
+      createdAt,
+      questions: streamlinedQuestions,
+      course,
+      creator: {
+        _id: creator._id,
+        createdAt: creator.createdAt,
+        email: creator.emails[0].address
+      },
+    };
+  },
 });
+

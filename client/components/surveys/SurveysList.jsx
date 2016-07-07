@@ -6,9 +6,10 @@ import bootstrapConfirm from 'bootstrap-confirm';
 import {Surveys} from '../../../imports/collections/surveys';
 import {Courses} from '../../../imports/collections/courses';
 
-import NewSurvey from '../surveys/NewSurvey';
+import NewSurvey from './NewSurvey';
 import LoadingIndicator from '../LoadingIndicator';
-import Login from '../Login.jsx';
+import Login from '../Login';
+import SurveyJSONModal from './SurveyJSONModal';
 import moment from 'moment';
 
 class SurveysList extends Component {
@@ -17,6 +18,8 @@ class SurveysList extends Component {
     this.state = {
       selectedFilterCourse: 'all', 
       showNewSurveyModal: false,
+      showSurveyJSONModal: false,
+      surveyIndexForJSONModal: null
     }
   }
 
@@ -59,8 +62,12 @@ class SurveysList extends Component {
     });
   }
 
-  handleJSONButtonClick(e) {
+  handleJSONButtonClick(e, i) {
     e.preventDefault();
+    this.setState({
+      showSurveyJSONModal: true,
+      surveyIndexForJSONModal: i
+    })
   }
 
   handleTestDriveClick(e) {
@@ -88,7 +95,7 @@ class SurveysList extends Component {
     if (this.props.loading) {
       return '';
     }
-    return this.filteredSurveys().map((survey) => {
+    return this.filteredSurveys().map((survey, i) => {
       const course = this.props.courses.filter((courseObj) => {
         return courseObj._id === survey.courseId;
       })[0];
@@ -104,13 +111,12 @@ class SurveysList extends Component {
             </p>
             <div className="pull-right survey-list-item-actions">
 
-              <a className="btn btn-primary btn-xs"
-                href={`/api/surveys/${survey._id}`}
-                target="_blank"
+              <button className="btn btn-primary btn-xs"
                 title="Get JSON"
+                onClick={(e) => {this.handleJSONButtonClick(e, i)}}
                 >
                   <i className="fa fa-exchange" aria-hidden="true"></i> JSON
-              </a>
+              </button>
               <Link className="btn btn-info btn-xs"
                 to={`/surveys/${survey._id}/edit`}
                 title="Edit">
@@ -168,6 +174,9 @@ class SurveysList extends Component {
           </div>
 
           <NewSurvey show={this.state.showNewSurveyModal} closeModal={() => {this.setState({showNewSurveyModal: false})}} />
+
+          <SurveyJSONModal show={this.state.showSurveyJSONModal} closeModal={() => {this.setState({showSurveyJSONModal: false})}} survey={this.props.surveys[this.state.surveyIndexForJSONModal]} />
+          
 
         </div>
       )

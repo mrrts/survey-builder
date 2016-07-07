@@ -103,11 +103,15 @@ class EditSurvey extends Component {
     this.setState({ questions: clonedArr });
   }
 
-  removeQuestion(e, index) {
+  handleRemoveQuestionClick(e, index) {
     e.preventDefault();
-    var clonedArr = JSON.parse(JSON.stringify(this.state.questions));
-    clonedArr.splice(index, 1);
-    this.setState({ questions: clonedArr });
+    bootstrapConfirm(`Are you sure you want to delete this question?`, (confirmed) => {
+      if (confirmed) {
+        var clonedArr = JSON.parse(JSON.stringify(this.state.questions));
+        clonedArr.splice(index, 1);
+        this.setState({ questions: clonedArr });    
+      }
+    });
   }
 
   renderQuestions() {
@@ -129,7 +133,7 @@ class EditSurvey extends Component {
                 <i className="fa fa-pencil" aria-hidden="true"></i>
               </button>
               <button className="btn btn-xs btn-danger"
-                onClick={(e) => {this.removeQuestion(e, i)}}>
+                onClick={(e) => {this.handleRemoveQuestionClick(e, i)}}>
                 <i className="fa fa-trash" aria-hidden="true"></i>
               </button>
             </div>
