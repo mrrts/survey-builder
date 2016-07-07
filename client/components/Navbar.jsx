@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {Link} from 'react-router';
 import activeComponent from 'react-router-active-component';
 import {createContainer} from 'meteor/react-meteor-data';
-
 var NavbarLink = activeComponent('li');
 
 class Navbar extends Component {

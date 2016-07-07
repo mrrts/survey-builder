@@ -34,7 +34,6 @@ Meteor.methods({
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
-    
     const {surveyId, title, courseId, questions} = surveyData;
     Surveys.update(surveyId, {
       $set: {
