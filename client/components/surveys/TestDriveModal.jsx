@@ -165,7 +165,7 @@ export default class TestDriveModal extends Component {
             <button 
               className="btn btn-info pull-right"
               onClick={this.toggleResponseView.bind(this)}>
-                {this.state.viewResponses ? "Back to Survey" : "View Responses"}
+                {this.state.viewResponses ? "Back to Survey" : "Preview Responses"}
             </button>
             <div className="clearfix" />
           </Modal.Body>
