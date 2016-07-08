@@ -215,7 +215,7 @@ export default class NewQuestion extends Component {
             </button>
             <button className="btn btn-primary"
               onClick={this.handleSaveQuestionClick.bind(this)}>
-                Save Question
+                {this.props.editingQuestion !== false ? "Update" : "Add"} Question
             </button>
           </Modal.Footer>
         </Modal>
