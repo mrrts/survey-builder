@@ -3,7 +3,7 @@ import {createContainer} from 'meteor/react-meteor-data';
 import {Surveys} from '../../../imports/collections/surveys';
 import {Courses} from '../../../imports/collections/courses';
 import LoadingIndicator from '../LoadingIndicator';
-import NewQuestion from '../surveys/NewQuestion';
+import NewQuestion from './NewQuestion';
 import bootstrapConfirm from 'bootstrap-confirm';
 import changeCase from 'change-case';
 import {browserHistory} from 'react-router';
@@ -11,7 +11,7 @@ import {browserHistory} from 'react-router';
 class EditSurvey extends Component {
   constructor(props) {
     super(props);
-    this.state = {title: '', questions: [], courseId: '', editingQuestion: false, receivedFromDB: false, error: null, showNewQuestionModal: false}
+    this.state = {title: '', questions: [], courseId: '', showQuestionOrderModal: false, editingQuestion: false, receivedFromDB: false, error: null, showNewQuestionModal: false}
   }
 
   componentDidUpdate() {
@@ -84,9 +84,10 @@ class EditSurvey extends Component {
     })
   }
 
-  closeModal() {
+  closeModals() {
     this.setState({
       showNewQuestionModal: false,
+      showQuestionOrderModal: false,
       editingQuestion: false
     });
   }
@@ -101,6 +102,12 @@ class EditSurvey extends Component {
     var clonedArr = JSON.parse(JSON.stringify(this.state.questions));
     clonedArr.splice(i, 1, questionObj);
     this.setState({ questions: clonedArr });
+  }
+
+  updateQuestionsOrder(newQuestionsArr) {
+    this.setState({
+      questions: newQuestionsArr
+    })
   }
 
   handleRemoveQuestionClick(e, index) {
@@ -229,8 +236,9 @@ class EditSurvey extends Component {
             editingQuestion={this.state.editingQuestion} 
             resetEditing={() => {this.setState({editingQuestion: false})}} 
             updateQuestion={this.updateQuestion.bind(this)} 
-            closeModal={this.closeModal.bind(this)} 
+            closeModal={this.closeModals.bind(this)} 
             addQuestion={this.addQuestion.bind(this)} />
+
 
         </div>
       )

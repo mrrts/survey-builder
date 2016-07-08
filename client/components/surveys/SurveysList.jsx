@@ -10,6 +10,7 @@ import NewSurvey from './NewSurvey';
 import LoadingIndicator from '../LoadingIndicator';
 import Login from '../Login';
 import SurveyJSONModal from './SurveyJSONModal';
+import TestDriveModal from './TestDriveModal';
 import moment from 'moment';
 
 class SurveysList extends Component {
@@ -19,7 +20,9 @@ class SurveysList extends Component {
       selectedFilterCourse: 'all', 
       showNewSurveyModal: false,
       showSurveyJSONModal: false,
-      surveyIndexForJSONModal: null
+      showTestDriveModal: false,
+      surveyIndexForJSONModal: null,
+      surveyIndexForTestDriveModal: null,
     }
   }
 
@@ -70,8 +73,12 @@ class SurveysList extends Component {
     })
   }
 
-  handleTestDriveClick(e) {
+  handleTestDriveClick(e, i) {
     e.preventDefault();
+    this.setState({
+      showTestDriveModal: true,
+      surveyIndexForTestDriveModal: i
+    });
   }
 
   renderSurveysOuterView() {
@@ -110,7 +117,12 @@ class SurveysList extends Component {
               Created {moment(survey.createdAt).format('MM/DD/YYYY')}
             </p>
             <div className="pull-right survey-list-item-actions">
-
+              <button className="btn btn-success btn-xs"
+                title="Test Drive this Survey"
+                onClick={(e) => {this.handleTestDriveClick(e, i)}}
+                >
+                  <i className="fa fa-play-circle" aria-hidden="true"></i> Test Drive
+              </button>
               <button className="btn btn-primary btn-xs"
                 title="Get JSON"
                 onClick={(e) => {this.handleJSONButtonClick(e, i)}}
@@ -176,6 +188,8 @@ class SurveysList extends Component {
           <NewSurvey show={this.state.showNewSurveyModal} closeModal={() => {this.setState({showNewSurveyModal: false})}} />
 
           <SurveyJSONModal show={this.state.showSurveyJSONModal} closeModal={() => {this.setState({showSurveyJSONModal: false})}} survey={this.props.surveys[this.state.surveyIndexForJSONModal]} />
+
+          <TestDriveModal show={this.state.showTestDriveModal} closeModal={() => {this.setState({ showTestDriveModal: false})}} survey={this.props.surveys[this.state.surveyIndexForTestDriveModal]} />
           
 
         </div>

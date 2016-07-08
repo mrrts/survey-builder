@@ -28,7 +28,6 @@ export default class SurveyJSONModal extends Component {
     if (!this.props.survey || prevProps === this.props) {
       return;
     }
-    console.log('got this far');
     this.getJSON();
   }
 

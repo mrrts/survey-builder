@@ -195,11 +195,7 @@ export default class NewQuestion extends Component {
                   checked={this.state.type == 'multipleChoice'} readOnly
                   onClick={this.handleQuestionTypeClick.bind(this)} /> Multiple Choice
               </label>
-              <label className="radio-inline">
-                <input type="radio" value="ratingSlider"
-                  checked={this.state.type == 'ratingSlider'} readOnly disabled
-                  onClick={this.handleQuestionTypeClick.bind(this)} /> Rating Slider (Coming Soon)
-              </label>
+            
             </form>
             <form>
               <div className="form-group">
