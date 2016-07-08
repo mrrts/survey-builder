@@ -18,14 +18,23 @@ export default class TestDriveModal extends Component {
       return;
     }
     if (this.props.survey) {
-      var responseObj = {};
-      this.props.survey.questions.forEach((question) => {
-        responseObj[question.question] = "";
-      });
       this.setState({
-        responses: responseObj,
         surveyLoaded: true
       });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.survey) {
+      var clonedResponseObj = {};
+      nextProps.survey.questions.forEach((question) => {
+        if (!this.state.responses[question.question]) {
+          clonedResponseObj[question.question] = '';
+          this.setState({
+            responses: clonedResponseObj
+          })
+        }
+      })
     }
   }
 
@@ -79,7 +88,7 @@ export default class TestDriveModal extends Component {
 
   multipleChoiceField(question) {
     return (
-        <RadioGroup selectedValue={this.state.responses[question.question]} name={question.question} onChange={this.handleRadioChange.bind(this, question.question)}>
+        <RadioGroup key={question.question} selectedValue={this.state.responses[question.question]} name={question.question} onChange={this.handleRadioChange.bind(this, question.question)}>
           {this.renderChoices(question)}
         </RadioGroup>
       )
@@ -92,6 +101,7 @@ export default class TestDriveModal extends Component {
       viewResponses: !currentState
     })
   }
+
 
   renderResponses() {
     return (
@@ -126,6 +136,16 @@ export default class TestDriveModal extends Component {
     });
   }
 
+  handleCloseModalClick(e) {
+    e.preventDefault();
+    this.setState({
+      surveyLoaded: false,
+      viewResponses: false,
+      responses: {}
+    })
+    this.props.closeModal();
+  }
+
   render() {
     if (!this.props.survey) {
       return <div />
@@ -151,7 +171,7 @@ export default class TestDriveModal extends Component {
           </Modal.Body>
           <Modal.Footer>
             <button className="btn btn-primary"
-              onClick={(e)=>{e.preventDefault(); this.props.closeModal()}}>
+              onClick={this.handleCloseModalClick.bind(this)}>
                 Close 
             </button>
           </Modal.Footer>
