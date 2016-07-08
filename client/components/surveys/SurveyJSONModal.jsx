@@ -45,11 +45,11 @@ export default class SurveyJSONModal extends Component {
     const apiUrl = `/api/surveys/${this.props.survey._id}`;
     return (
         <div>
-          <h4>
-            API Endpoint: <a href={apiUrl} target="_blank">
-              {apiUrl} <i className="fa fa-external-link" aria-hidden="true"></i>
-            </a>
-          </h4>
+          <p>
+            <a className="btn btn-info btn-sm" href={apiUrl} target="_blank">
+              View API Endpoint <i className="fa fa-external-link" aria-hidden="true"></i>
+            </a> ({apiUrl})
+          </p>
           <div>
             <pre>
               <samp>
@@ -67,7 +67,7 @@ export default class SurveyJSONModal extends Component {
     }
     const {survey} = this.props;
     return (
-        <Modal show={this.props.show}>
+        <Modal bsSize="lg" show={this.props.show}>
           <Modal.Header>
             <h3>JSON Representing Survey "{survey.title}"</h3>
           </Modal.Header>

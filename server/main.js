@@ -8,11 +8,17 @@ import _ from 'lodash';
 
 
 const middlewareAPIRedirector = ConnectRoute(function(router) {
-  router.get('/api/surveys', (req, res, next) => {
+  router.get('/api/surveys', (request, response, next) => {
     const surveys = Surveys.find({}).fetch();
-    // res.writeHead(200);
-    res.end(JSON.stringify(surveys));
-    next();
+    Meteor.call('survey.expandedCollectionForApi', true, (error, result) => {
+      if (error) {
+        response.end(JSON.stringify(error));
+        next();
+        return;
+      }
+      response.end(JSON.stringify(result));
+      next();
+    });
   });
 
   router.get('/api/surveys/:id', (request, response, next) => {
@@ -29,11 +35,11 @@ const middlewareAPIRedirector = ConnectRoute(function(router) {
   });
 })
 
+
+
+
 WebApp.connectHandlers
   .use(middlewareAPIRedirector);
-
-
-
 
 Meteor.startup(() => {
   // code to run on server at startup
